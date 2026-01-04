@@ -7,7 +7,12 @@ import json
 
 if __name__ == "__main__":
     scraper = ScholarScraper()
-    scraper.request_scholar("Joko Siswantoro")
-    papers = scraper.scrape_scholar_papers(5,output_format="dict")
+    scraper.request_scholar("Joko Siswantoro", "Machine Learning")
+
+    author_link = scraper.access_author_page()
+    print("Author page:", author_link)
+
+    papers = scraper.scrape_scholar_papers(5, output_format="dict")
     print(papers)
+
 

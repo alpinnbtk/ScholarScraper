@@ -127,6 +127,28 @@ class ScholarScraper:
         except Exception as e:
             if self.config._is_verbose: print(f"Error finding profile: {e}")
             return False
+        
+    def _load_more_articles_if_needed(self, required_count):
+        try:
+            while True:
+                articles = self.__webdriver.find_elements(By.CSS_SELECTOR, "tr.gsc_a_tr")
+                if len(articles) >= required_count:
+                    if self.config._is_verbose: print(f"Loaded {len(articles)} articles. Sufficient.")
+                    break
+                
+                show_more_btn = self.__webdriver.find_element(By.ID, "gsc_bpf_more")
+                
+                if show_more_btn.get_attribute("disabled"):
+                    if self.config._is_verbose: print("No more articles to load.")
+                    break
+
+                if self.config._is_verbose: print("Clicking 'Show More'...")
+
+                show_more_btn.click()
+                time.sleep(2)
+                
+        except Exception as e:
+            if self.config._is_verbose: print(f"Stop loading more: {e}")
 
     def _scrape_modal_details(self):
         details = {
@@ -211,6 +233,7 @@ class ScholarScraper:
                         EC.element_to_be_clickable((By.ID, "gs_hdr_bck"))
                     )
                     back_btn.click()
+                    self._load_more_articles_if_needed(count)
                 except:
                     try:
                         self.__webdriver.find_element(By.ID, "gsc_oci_x").click()

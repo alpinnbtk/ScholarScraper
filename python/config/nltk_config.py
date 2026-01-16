@@ -6,6 +6,6 @@ def ensure_nltk_data():
         try:
             nltk.data.find(f"corpora/{r}")
         except LookupError:
-            nltk.download(r)
+            nltk.download(r, quiet=True) 
 
 ensure_nltk_data()
